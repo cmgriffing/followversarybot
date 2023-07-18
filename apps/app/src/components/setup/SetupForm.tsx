@@ -19,10 +19,10 @@ import { FormInput, FormTextArea } from "./FormFields";
 
 import { defaultMessageTemplate, CLIENT_ID } from "../../lib/core";
 
-let BASE_URL = "http://localhost:3000";
+let BASE_URL = "http://localhost:3000/followversarybot";
 
 if (window.location.host.indexOf("github.io") > -1) {
-  BASE_URL = "https://cmgriffing.github.io/followversary-bot";
+  BASE_URL = "https://cmgriffing.github.io/followversarybot";
 }
 const REDIRECT_URI = `${BASE_URL}/setup`;
 
