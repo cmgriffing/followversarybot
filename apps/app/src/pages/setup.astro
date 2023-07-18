@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Button } from "@/components/ui/button";
+import { SetupForm } from "@/components/setup/SetupForm";
+---
+
+<BaseLayout>
+  <SetupForm client:only />
+</BaseLayout>

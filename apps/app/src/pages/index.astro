@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { buttonVariants } from "@/components/ui/button";
+---
+
+<BaseLayout>
+	<section class="text-gray-600 body-font">
+		<div
+			class="container mx-auto flex flex-col px-5 py-24 justify-center items-center"
+		>
+			<i class="text-[12rem]">🎉</i>
+			<div class="w-full md:w-2/3 flex flex-col mb-16 items-center text-center">
+				<h1
+					class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900"
+				>
+					Recognize the viewers that have stuck with you!
+				</h1>
+				<p class="mb-8 leading-relaxed">
+					They might not even realize that it's their followversary. Let them
+					know by enabling this bot.
+				</p>
+				<div class="flex flex-col items-center">
+					<a href="/setup" class={buttonVariants({ variant: "default" })}>
+						Setup
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</BaseLayout>

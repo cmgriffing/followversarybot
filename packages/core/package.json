@@ -1,0 +1,27 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "ts-node test/index.ts",
+    "tsc": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.9",
+    "mustache": "^4.2.0",
+    "tmi.js": "^1.8.5"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.2",
+    "@types/node": "^20.4.2",
+    "@types/tmi.js": "^1.8.3",
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
