@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 import { Button, buttonVariants } from "../ui/button";
 import {
@@ -9,10 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { useToast } from "../ui/use-toast";
 
 import { CopyUrl } from "./CopyUrl";
 import { FormInput, FormTextArea } from "./FormFields";
@@ -32,7 +31,10 @@ const SCOPE = "moderator:read:followers chat:read chat:edit";
 export function SetupForm() {
   const rawFragment = window.location.hash;
   const [fragment, rawSearchParams] = rawFragment.split("&", 2);
-  const accessToken = fragment.replace("#access_token=", "");
+  const [accessToken, setAccessToken] = useState(
+    fragment.replace("#access_token=", "")
+  );
+  const [tokenExpiration, setTokenExpiration] = useState(dayjs());
 
   const [channelName, setChannelName] = useState("");
   const [botName, setBotName] = useState("");
@@ -49,11 +51,12 @@ export function SetupForm() {
 
   useEffect(() => {
     if (accessToken) {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        "Client-ID": CLIENT_ID,
+      };
       fetch(`https://api.twitch.tv/helix/users`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Client-ID": CLIENT_ID,
-        },
+        headers,
       })
         .then((response) => {
           if (response.ok) {
@@ -66,6 +69,31 @@ export function SetupForm() {
             const userData = userResponse.data[0];
             setChannelName(userData.login);
             setBotName(userData.login);
+          }
+        });
+      fetch(`https://id.twitch.tv/oauth2/validate`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            setAccessToken("");
+          }
+        })
+        .then((tokenResponse: GetTokenResponse) => {
+          if (tokenResponse) {
+            console.log({ tokenResponse });
+
+            // setTokenExpiresInSeconds(tokenResponse.expires_in);
+            const newExpirationDate = dayjs().add(
+              tokenResponse.expires_in,
+              "seconds"
+            );
+
+            setTokenExpiration(newExpirationDate);
           }
         });
     }
@@ -100,18 +128,20 @@ export function SetupForm() {
             </>
           )}
           {!!accessToken && (
-            <div className="flex flex-row gap-4">
-              <Button variant={"outline"} disabled>
-                Logged In
-              </Button>
-
-              <a
-                href={`https://id.twitch.tv/oauth2/authorize?${queryParams}`}
-                className={buttonVariants({ variant: "outline" })}
-              >
-                Refresh Token
-              </a>
-            </div>
+            <>
+              <div className="flex flex-col">
+                <div className="font-bold text-lg text-center">
+                  Token expires {tokenExpiration.fromNow()}
+                </div>
+                <div>You can refresh your token to reset the timer.</div>
+                <a
+                  href={`https://id.twitch.tv/oauth2/authorize?${queryParams}`}
+                  className={buttonVariants()}
+                >
+                  Refresh Token
+                </a>
+              </div>
+            </>
           )}
         </div>
         {!!accessToken && (
@@ -182,4 +212,12 @@ export interface GetUserResponse {
     view_count: number;
     created_at: Date;
   }[];
+}
+
+interface GetTokenResponse {
+  client_id: string;
+  login: string;
+  scopes: string[];
+  user_id: string;
+  expires_in: number;
 }

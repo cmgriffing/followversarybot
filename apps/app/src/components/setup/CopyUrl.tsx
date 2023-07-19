@@ -13,7 +13,7 @@ export function CopyUrl({ browserSourceUrl }: CopyUrlProps) {
   const { toast } = useToast();
 
   return (
-    <div className="flex-col w-full max-w-sm gap-2">
+    <div className="flex flex-col w-full max-w-sm gap-2">
       <Label className="mb-2">Copy URL</Label>
       <div className="flex w-full max-w-sm items-center space-x-2">
         <Input
